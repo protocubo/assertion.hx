@@ -24,5 +24,17 @@ class Assertion {
 			}
 		}
 	}
+
+	public static macro function weakAssert(cond:ExprOf<Bool>, traces:Array<Expr>):ExprOf<Void>
+	{
+		var pos = Context.currentPos();
+		var dump = traces.map(dumpValue);
+		return macro @:pos(pos) {
+			if (!$cond) {
+				$a{dump};
+				trace("Weak assertion failed: " + $v{cond.toString()});
+			}
+		}
+	}
 }
 
