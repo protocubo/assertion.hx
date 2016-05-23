@@ -5,6 +5,8 @@ using haxe.macro.ExprTools;
 @:dce
 class Assertion {
 #if macro
+	public static var DISABLE_FLAG = "NO_ASSERTIONS";
+
 	static function dumpValue(v:Expr)
 	{
 		return switch v.expr {
@@ -14,12 +16,15 @@ class Assertion {
 	}
 #end
 
+	public static var enabled = true;
+
 	public static macro function assert(cond:ExprOf<Bool>, traces:Array<Expr>):ExprOf<Void>
 	{
+		if (Context.defined(DISABLE_FLAG)) return macro {};
 		var pos = Context.currentPos();
 		var dump = traces.map(dumpValue);
 		return macro @:pos(pos) {
-			if (!$cond) {
+			if (Assertion.enabled && !$cond) {
 				$a{dump};
 				throw "Assertion failed: " + $v{cond.toString()};
 			}
@@ -28,10 +33,11 @@ class Assertion {
 
 	public static macro function weakAssert(cond:ExprOf<Bool>, traces:Array<Expr>):ExprOf<Void>
 	{
+		if (Context.defined(DISABLE_FLAG)) return macro {};
 		var pos = Context.currentPos();
 		var dump = traces.map(dumpValue);
 		return macro @:pos(pos) {
-			if (!$cond) {
+			if (Assertion.enabled && !$cond) {
 				$a{dump};
 				trace("Weak assertion failed: " + $v{cond.toString()});
 			}
