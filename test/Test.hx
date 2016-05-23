@@ -6,10 +6,11 @@ class Test {
 
 	function test_it()
 	{
-		assert(Std.random(2) == 1 && 1 == 1);
-		assert(Std.random(2) == 1 && 2 == 2, Std.random(2));
-		assert(Std.random(2) == 1 && 3 == 3, Std.random(3), Std.random(4));
-		assert(Std.random(2) == 1 && 4 == 4, Date.now());
+		assert(Std.random(6) != 1);
+		assert(Std.random(5) != 1, Std.random(2));
+		assert(Std.random(4) != 1, Std.random(3), Std.random(4));
+		assert(Std.random(3) != 1, Date.now());
+		assert(Std.random(2) != 1, "one simple message");
 		Utest.isTrue(true);  // for now, just run with it
 	}
 
