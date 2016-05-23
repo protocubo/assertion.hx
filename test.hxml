@@ -1,0 +1,8 @@
+--interp
+-main Test
+-lib assertion
+-lib utest
+-cp test
+-D dump=pretty
+-D analyzer
+
