@@ -2,6 +2,7 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 using haxe.macro.ExprTools;
 
+@:dce
 class Assertion {
 #if macro
 	static function dumpValue(v:Expr)
