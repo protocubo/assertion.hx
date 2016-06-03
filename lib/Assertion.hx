@@ -38,8 +38,8 @@ class Assertion {
 		var dump = traces.map(dumpValue);
 		return macro @:pos(pos) {
 			if (Assertion.enabled && !$cond) {
-				$a{dump};
 				trace("Weak assertion failed: " + $v{cond.toString()});
+				$a{dump};
 			}
 		}
 	}
