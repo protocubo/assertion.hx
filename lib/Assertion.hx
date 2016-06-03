@@ -10,7 +10,7 @@ class Assertion {
 	static function dumpValue(v:Expr)
 	{
 		return switch v.expr {
-		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) trace("(assertion info) " + $v{v.toString()});
+		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) trace("(assertion info) " + $v);
 		case _: macro @:pos(v.pos) trace("(assertion trace) " + $v{v.toString()} + " = " + $v);
 		}
 	}
