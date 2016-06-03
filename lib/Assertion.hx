@@ -11,7 +11,7 @@ class Assertion {
 	{
 		return switch v.expr {
 		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) trace("(assertion info) " + $v);
-		case _: macro @:pos(v.pos) trace("(assertion trace) " + $v{v.toString()} + " = " + $v);
+		case _: macro @:pos(v.pos) trace($v{"(assertion trace) " + v.toString() + " = "} + $v);
 		}
 	}
 #end
