@@ -5,26 +5,29 @@ using haxe.macro.ExprTools;
 @:dce
 class Assertion {
 #if macro
-	public static var DISABLE_FLAG = "NO_ASSERTIONS";
+	public static var NO_ASSERT = "ASSERTION_NO_ASSERT";
+	public static var NO_WEAK_ASSERT = "ASSERTION_NO_WEAK_ASSERT";
+	public static var NO_SHOW = "ASSERTION_NO_SHOW";
 
-	static function dumpValue(v:Expr)
+	static function showValue(prefix:String,  v:Expr)
 	{
 		return switch v.expr {
-		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) trace("(assertion info) " + $v);
-		case _: macro @:pos(v.pos) trace($v{"(assertion trace) " + v.toString() + " = "} + $v);
+		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) trace($v{prefix} + $v);
+		case _: macro @:pos(v.pos) trace($v{prefix + v.toString() + "="} + $v);
 		}
 	}
 #end
-
-	public static var enabled = true;
+	public static var enableAssert = true;
+	public static var enableWeakAssert = true;
+	public static var enableShow = true;
 
 	public static macro function assert(cond:ExprOf<Bool>, traces:Array<Expr>):ExprOf<Void>
 	{
-		if (Context.defined(DISABLE_FLAG)) return macro {};
+		if (Context.defined(NO_ASSERT)) return macro {};
 		var pos = Context.currentPos();
-		var dump = traces.map(dumpValue);
+		var dump = traces.map(showValue.bind("[assert] "));
 		return macro @:pos(pos) {
-			if (Assertion.enabled && !$cond) {
+			if (Assertion.enableAssert && !$cond) {
 				$a{dump};
 				throw "Assertion failed: " + $v{cond.toString()};
 			}
@@ -33,12 +36,24 @@ class Assertion {
 
 	public static macro function weakAssert(cond:ExprOf<Bool>, traces:Array<Expr>):ExprOf<Void>
 	{
-		if (Context.defined(DISABLE_FLAG)) return macro {};
+		if (Context.defined(NO_ASSERT) || Context.defined(NO_WEAK_ASSERT)) return macro {};
 		var pos = Context.currentPos();
-		var dump = traces.map(dumpValue);
+		var dump = traces.map(showValue.bind("[weak assert] "));
 		return macro @:pos(pos) {
-			if (Assertion.enabled && !$cond) {
-				trace("Weak assertion failed: " + $v{cond.toString()});
+			if (Assertion.enableAssert && Assertion.enableWeakAssert && !$cond) {
+				$a{dump};
+				trace("[weak assert] would have FAILED: " + $v{cond.toString()});
+			}
+		}
+	}
+
+	public static macro function show(exprs:Array<Expr>):ExprOf<Void>
+	{
+		if (Context.defined(NO_SHOW)) return macro {};
+		var pos = Context.currentPos();
+		var dump = exprs.map(showValue.bind(""));
+		return macro @:pos(pos) {
+			if (Assertion.enableShow) {
 				$a{dump};
 			}
 		}

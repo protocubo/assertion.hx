@@ -1,8 +1,12 @@
---interp
 -main Test
--lib assertion
 -lib utest
+-lib assertion
 -cp test
 -D dump=pretty
 -D analyzer
+
+--each
+--interp
+--next
+-js test.js
 

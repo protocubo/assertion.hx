@@ -6,19 +6,19 @@ class Test {
 
 	function test_it()
 	{
-		assert(Std.random(6) != 0);
-		assert(Std.random(5) != 0, Std.random(2));
-		assert(Std.random(4) != 0, Std.random(3), Std.random(4));
-		assert(Std.random(3) != 0, Date.now());
-		assert(Std.random(2) != 0, "one simple message");
+		show("a simple show and tell");
+		show(Date.now());
 
-		weakAssert(Std.random(1) != 0);
+		weakAssert(1 == 1, "foo");
+		weakAssert(1 == 0, "bar", Math.PI);
 
-		Utest.isTrue(true);  // for now, just run with it
+		assert(1 == 1, "red");
+		assert(1 == 0, "blu", Math.atan(1));
 	}
 
 	static function main()
 	{
+		trace("Hello World");
 		var r = new utest.Runner();
 		r.addCase(new Test());
 		utest.ui.Report.create(r);
