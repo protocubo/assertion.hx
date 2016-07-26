@@ -12,8 +12,8 @@ class Assertion {
 	static function showValue(prefix:String,  v:Expr)
 	{
 		return switch v.expr {
-		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) trace($v{prefix} + $v);
-		case _: macro @:pos(v.pos) trace($v{prefix + v.toString() + "="} + $v);
+		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) haxe.Log.trace($v{prefix} + $v);
+		case _: macro @:pos(v.pos) haxe.Log.trace($v{prefix + v.toString() + "="} + $v);
 		}
 	}
 #end
@@ -42,7 +42,7 @@ class Assertion {
 		return macro @:pos(pos) {
 			if (Assertion.enableAssert && Assertion.enableWeakAssert && !$cond) {
 				$a{dump};
-				trace("[weak assert] would have FAILED: " + $v{cond.toString()});
+				haxe.Log.trace("[weak assert] would have FAILED: " + $v{cond.toString()});
 			}
 		}
 	}
