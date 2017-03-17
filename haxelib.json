@@ -1,10 +1,10 @@
 {
     "name"         :  "assertion",
-    "url"          :  "",
+    "url"          :  "https://github.com/protocubo/assertion.hx",
     "license"      :  "BSD",
     "tags"         :  ["cross"],
-    "description"  :  "Quick assertions",
-    "version"      :  "0.0.0-alpha",
+    "description"  :  "Quick assertions and traces with macros",
+    "version"      :  "1.0.0",
     "classPath"    :  "lib",
     "releasenote"  :  "Initial work",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
