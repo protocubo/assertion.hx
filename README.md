@@ -28,7 +28,7 @@ show(foo, Sys.systemName(), "show everything");
 
 ## Configuring
 
-`Assertion` works out of the box without any configuration, but in same
+`Assertion` works out of the box without any configuration, but in some
 cases you might want to change or disable certain default behaviors.
 
 You can configure the library both at compile time and runtime.
