@@ -20,7 +20,7 @@ class Tools {
 		case _:
 		}
 		for (t in traces)
-			haxe.Log.trace(prefix + ${t.expr != null ? t.expr + "=" : "" } + t.value, pos);
+			haxe.Log.trace(prefix + (t.expr != null ? t.expr + "=" : "") + t.value, pos);
 		if (final != null)
 			haxe.Log.trace(prefix + final, pos);
 		return true;
