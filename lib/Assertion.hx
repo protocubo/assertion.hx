@@ -9,11 +9,11 @@ class Assertion {
 	public static var NO_WEAK_ASSERT = "ASSERTION_NO_WEAK_ASSERT";
 	public static var NO_SHOW = "ASSERTION_NO_SHOW";
 
-	static function showValue(prefix:String,  v:Expr)
+	static function prepareTraces(v:Expr)
 	{
 		return switch v.expr {
-		case EConst(c) if (!c.match(CIdent(_))): macro @:pos(v.pos) haxe.Log.trace($v{prefix} + $v);
-		case _: macro @:pos(v.pos) haxe.Log.trace($v{prefix + v.toString() + "="} + $v);
+		case EConst(c) if (!c.match(CIdent(_))): macro { expr:null, rawValue:($v:Dynamic), value:""+$v };
+		case _: macro { expr:$v{v.toString()}, rawValue:($v:Dynamic), value:""+$v };
 		}
 	}
 #end
@@ -25,38 +25,37 @@ class Assertion {
 	{
 		if (Context.defined(NO_ASSERT)) return macro {};
 		var pos = Context.currentPos();
-		var dump = traces.map(showValue.bind("[assert] "));
-		return macro @:pos(pos) {
-			if (Assertion.enableAssert && !$cond) {
-				$a{dump};
-				throw "Assertion failed: " + $v{cond.toString()};
+		var traces = macro $a{traces.map(prepareTraces)};
+		return macro {
+			if (Assertion.enableAssert && !$cond) @:pos(pos) {
+				if (assertion.Tools.runtime(assertion.Type.Assert($v{cond.toString()}), $traces))
+					throw "Assertion failed: " + $v{cond.toString()};
 			}
-		}
+		};
 	}
 
 	public static macro function weakAssert(cond:ExprOf<Bool>, traces:Array<Expr>):ExprOf<Void>
 	{
 		if (Context.defined(NO_ASSERT) || Context.defined(NO_WEAK_ASSERT)) return macro {};
 		var pos = Context.currentPos();
-		var dump = traces.map(showValue.bind("[weak assert] "));
-		return macro @:pos(pos) {
+		var traces = macro $a{traces.map(prepareTraces)};
+		return macro {
 			if (Assertion.enableAssert && Assertion.enableWeakAssert && !$cond) {
-				$a{dump};
-				haxe.Log.trace("[weak assert] would have FAILED: " + $v{cond.toString()});
+				@:pos(pos) assertion.Tools.runtime(assertion.Type.WeakAssert($v{cond.toString()}), $traces);
 			}
-		}
+		};
 	}
 
 	public static macro function show(exprs:Array<Expr>):ExprOf<Void>
 	{
 		if (Context.defined(NO_SHOW)) return macro {};
 		var pos = Context.currentPos();
-		var dump = exprs.map(showValue.bind(""));
-		return macro @:pos(pos) {
+		var traces = macro $a{exprs.map(prepareTraces)};
+		return macro {
 			if (Assertion.enableShow) {
-				$a{dump};
+				@:pos(pos) assertion.Tools.runtime(assertion.Type.Show, $traces);
 			}
-		}
+		};
 	}
 }
 

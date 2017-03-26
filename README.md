@@ -51,3 +51,6 @@ alter the behavior of `Assertion` at runtime:
  - `Assertion.enableWeakAssert` (defaults to `true`)
  - `Assertion.enableShow` (defaults to `true`)
 
+Additionally, the runtime behavior can be considerably customized by replacing
+`assertion.Tools.runtime` with a suitable implementation.
+
