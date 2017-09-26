@@ -10,19 +10,19 @@ class Tools {
 	*/
 	public static dynamic function runtime(type:Type, traces:Array<assertion.Trace>, ?pos:haxe.PosInfos):Bool
 	{
-		var prefix = "", final = null;
+		var prefix = "", finalWarning = null;
 		switch type {
 		case Assert(_):
 			prefix = "[assert] ";
 		case WeakAssert(cond):
 			prefix = "[weak assert] ";
-			final = 'would have FAILED: $cond';
+			finalWarning = 'would have FAILED: $cond';
 		case _:
 		}
 		for (t in traces)
 			haxe.Log.trace(prefix + (t.expr != null ? t.expr + "=" : "") + t.value, pos);
-		if (final != null)
-			haxe.Log.trace(prefix + final, pos);
+		if (finalWarning != null)
+			haxe.Log.trace(prefix + finalWarning, pos);
 		return true;
 	}
 }
